@@ -1,0 +1,182 @@
+﻿@{
+	@model LocationCORPApp.ViewModel.EmployeeLocationVM
+	ViewData["Title"] = "Employee Location Allocation";
+	var locationNames = ViewData["LocationNames"] as List<SelectListItem>;
+	//var locationNames = Model.LocationNames; 
+	//var buildingNames = ViewData["BuildingNames"] as List<SelectListItem>;
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		{
+			
+            $('#LocationName').select2({
+            });
+            $('#BuildingName').select2({
+            });
+            $('#FloorLevel').select2({
+            });
+            $('#OfficeCubicleNumber').select2({
+            });
+		}
+		//Dropdownlist Selectedchange event
+		$("#LocationName").change(function() {
+			$("#BuildingName").empty();
+            $("#FloorLevel").empty();
+            $("#OfficeCubicleNumber").empty();
+			$.ajax({
+				type: 'POST',
+				url: '@Url.Action("GetLocationName", "EmpLocationAllocation")', // we are calling json method
+
+				dataType: 'json',
+
+				data: { id: $("#LocationName").val() },
+				// here we are get value of selected locationname and passing same value  as input to json method GetBuildingName.
+
+				success: function(buildingNames) {
+					// buildingNames contains the JSON formatted list
+					// of states passed from the controller
+                    $("#BuildingName").append('<option value="' + 0 + '">Select a Building</option>');
+
+					$.each(buildingNames, function(i, buildingName) {
+						$("#BuildingName").append('<option value="' + buildingName.value + '">' +
+							buildingName.text + '</option>');
+						// here we are adding option for buildingNames
+
+					});
+				},
+				error: function(ex) {
+					alert('Failed to retrieve buildingNames.' + ex);
+				}
+			});
+			return false;
+		})
+
+		$("#BuildingName").change(function () {  
+            $("#FloorLevel").empty();
+			$("#OfficeCubicleNumber").empty(); 
+            $.ajax({  
+                type: 'POST',  
+                url: '@Url.Action("GetFloorLevels", "EmpLocationAllocation")', // we are calling json method  
+   
+                dataType: 'json',  
+   
+                data: { id: $("#BuildingName").val() },   
+               // here we are get value of selected country and passing same value  
+                  //as inputto json method .  
+   
+                success: function (floorLevels) {  
+                    // states contains the JSON formatted list  
+                    // of states passed from the controller  
+					
+                    $("#FloorLevel").append('<option value="' + 0 + '">Select a Floor</option>');
+                    $.each(floorLevels, function (i, floorLevel) {  
+                    $("#FloorLevel").append('<option value="' + floorLevel.value + '">' +    
+                         floorLevel.text + '</option>');                                                                                                  
+                    // here we are adding option for States  
+   
+                    });  
+                },  
+                error: function (ex) {  
+                    alert('Failed to retrieve floorLevels.' + ex);  
+                }  
+			});  
+            return false;  
+		})
+
+	   $("#FloorLevel").change(function () {  
+           $("#OfficeCubicleNumber").empty();  
+           $.ajax({  
+               type: 'POST',  
+               url: '@Url.Action("GetOfficeNumbers", "EmpLocationAllocation")', // we are calling json method  
+   
+               dataType: 'json',  
+   
+               data: { id: $("#FloorLevel").val() },   
+               // here we are get value of selected country and passing same value  
+                  //as inputto json method .  
+   
+               success: function (officeNumbers) {  
+                    // states contains the JSON formatted list  
+                    // of states passed from the controller  
+                   $("#OfficeCubicleNumber").append('<option value="' + 0 + '">Select an Office/Cubicle</option>');
+                   $.each(officeNumbers, function (i, officeNumber) {  
+                   $("#OfficeCubicleNumber").append('<option value="' + officeNumber.value + '">' +    
+                        officeNumber.text + '</option>');                                                                                                  
+                    // here we are adding option for States  
+   
+                   });  
+               },  
+               error: function (ex) {  
+                   alert('Failed to retrieve officeNumbers.' + ex);  
+               }  
+           });  
+           return false;  
+       })
+	});
+	$(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+  });
+</script>
+
+	<table>
+		<tr>
+			<td>Location</td>
+			<td>@Html.DropDownListFor(m => m.LocationName, locationNames, "Select Location")
+				<br />
+			@Html.ValidationMessageFor(model => model.LocationName, "", new {@class = "text-danger"})
+		</tr>
+		<tr>
+			<td>Building</td>
+			<td>@Html.DropDownList("BuildingName", new SelectList(string.Empty, "Value", "Text"), "Select a Building", new { style = "width:250px" })</td>
+		</tr	
+		<tr>
+			<td>Floor</td>
+			<td>@Html.DropDownList("FloorLevel", new SelectList(string.Empty, "Value", "Text"), "Select a Floor", new { style = "width:250px" })</td>
+		</tr>
+		<tr>
+			<td>Office/Cubicle Number</td>
+			<td>@Html.DropDownList("OfficeCubicleNumber", new SelectList(string.Empty, "Value", "Text"), "Select an Office/Cubicle", new { style = "width:250px" })</td
+		</tr>
+		<tr>
+			<td colspan="2">
+			</td>
+		</tr>
+		<tr>
+			<td>Picked Location</td>
+			<td>
+				@Model.LocationName
+			</td>
+		</tr>
+		<tr>
+			<td>Picked Building</td>
+			<td>
+				@Model.BuildingName
+			</td>
+		</tr>
+		<tr>
+			<td>Picked Floor Level</td>
+			<td>
+				@Model.FloorLevel
+			</td>
+		</tr>
+		<tr>
+			<td>Picked Cubical/Office</td>
+			<td>
+				@Model.OfficeCubicleNumber
+			</td>
+		</tr>
+	</table>
+
+	
+	<br />
+	<br />
+
+	<form method= "post">
+	<div asp-validation ="All" class="text-danger"></div>
+	</form>

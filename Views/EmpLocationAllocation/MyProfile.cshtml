@@ -1,0 +1,126 @@
+﻿@model LocationCORPApp.ViewModel.EmployeeProfileVM
+@{
+	ViewData["Title"] = "Employee Location Allocation";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var thisModel = Model;
+	var locationNames = ViewData["LocationNames"] as SelectList;
+	var pickedLoc = ViewData["PickedLocationName"];
+	var pickedBuild = ViewData["PickedBuildingName"];
+	var pickedLevel = ViewData["PickedFloorLevel"];
+	var pickedNum = ViewData["PickedOfficeCubicleNumber"];
+}
+<h1 style="text-align:center">@ViewData["Title"]</h1>
+<style type="text/css">
+	.control-label-value {
+		padding-top: 7px !important;
+		font-weight: normal !important;
+	}
+</style>
+@using (Html.BeginForm("Submit", "EmpLocationAllocation", FormMethod.Post))
+{
+
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div class="tab-pane active in" id="myprofile" role="tabpanel">
+						<h3> Personal Details </h3>
+						<div class="panel-body">
+							<div class="form-group">
+								@Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-4">
+									@Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+								</div>
+								@Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-4">
+									@Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+								</div>
+							</div>
+							<div class="form-group">
+								@Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-1">
+									@Html.RadioButtonFor(model => model.Gender, "1", new { @class = "" })
+									<span class="control-label-value">Male</span>
+								</div>
+								<div class="col-md-3">
+									@Html.RadioButtonFor(model => model.Gender, "2", new { @class = "" })
+									<span class="control-label-value">Female</span>
+									@Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+								</div>
+								@Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-4">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<span class="icon icon-calendar"></span>
+										</span>
+										@* <input style="background-color:white;width: 240px;" type="text" id="@Html.IdFor(model=>model.DOB)" name="@Html.NameFor(model=>model.DOB)" value="@(Model.DOB.Year <1900?string.Empty: Model.DOB.ToShortDateString())" contenteditable="false" readonly="readonly" class="form-control text-box single-line" data-provide="datepicker" data-date-end-date="0d"> *@
+										@Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								@Html.LabelFor(model => model.PersonalEmailID, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-4">
+									@Html.EditorFor(model => model.PersonalEmailID, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.PersonalEmailID, "", new { @class = "text-danger" })
+								</div>
+							</div>
+							<div class="form-group">
+								@Html.LabelFor(model => model.PrimaryPhone, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-4">
+									@Html.EditorFor(model => model.PrimaryPhone, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.PrimaryPhone, "", new { @class = "text-danger" })
+								</div>
+								@Html.LabelFor(model => model.SecondaryPhone, htmlAttributes: new { @class = "control-label col-md-2" })
+								<div class="col-md-4">
+									@Html.EditorFor(model => model.SecondaryPhone, new { htmlAttributes = new { @class = "form-control" } })
+									@Html.ValidationMessageFor(model => model.SecondaryPhone, "", new { @class = "text-danger" })
+								</div>
+							</div>
+							<div class="panel panel-info">
+								<div class="panel-body">
+									<div class="form-group">
+										@Html.LabelFor(model => model.EmployeeID, htmlAttributes: new { @class = "control-label col-md-2" })
+										<div class="col-md-4">
+											@Html.EditorFor(model => model.EmployeeID, new { htmlAttributes = new { @class = "form-control" } })
+											@Html.ValidationMessageFor(model => model.EmployeeID, "", new { @class = "text-danger" })
+										</div>
+										@Html.LabelFor(model => model.CompEmailID, htmlAttributes: new { @class = "control-label col-md-2" })
+										<div class="col-md-4">
+											@Html.EditorFor(model => model.CompEmailID, new { htmlAttributes = new { @class = "form-control" } })
+											@Html.ValidationMessageFor(model => model.CompEmailID, "", new { @class = "text-danger" })
+										</div>
+										@*<div class="col-md-4">
+									@Html.DropDownListFor(model => model.SupervisorWLANID, AllSupervisor as List<SelectListItem>, new { @class = "form-control" })
+									@Html.ValidationMessageFor(model => model.SupervisorWLANID, "", new { @class = "text-danger" })
+									</div>*@
+									</div>
+									<!----<div class="panel-footer panel-info">
+										<div class="form-group">
+											<div class="col-md-10">
+												<br />
+												<input type="submit" value="Save" onclick="fncValidateForm();" class="btn btn-primary" />
+											</div>
+										</div>
+									</div>-->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br />
+				<button type="submit" class="btn btn-primary">Submit</button>
+				<br />
+				<br />
+				<h3> Pick Location </h3>
+				@Html.Partial("Index", Model.EmployeeLocation, new ViewDataDictionary(this.ViewData){  } )
+				
+				<button type="submit" class="btn btn-primary">Submit</button>
+
+				//Console.WriteLine(pickedLoc);
+				//Console.WriteLine(pickedBuild);
+				//Console.WriteLine(pickedLevel);
+				//Console.WriteLine(pickedNum);
+				}
+
+
