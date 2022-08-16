@@ -54,14 +54,17 @@ namespace LocationCORPAPP.Controllers
                     List<HoltecLocations> NAMEandADDRESS = new List<HoltecLocations> { };
                     List<HoltecLocations> CompareNA = new List<HoltecLocations> { };
                     CompareNA.AddRange(_db.Locations.ToList());
+                    List<HoltecLocations> afterSaveNA = new List<HoltecLocations> { };
 
                     List<LocationBuildings> LocationsWID = new List<LocationBuildings> { };
                     List<LocationBuildings> CompareBU = new List<LocationBuildings> { };
                     CompareBU.AddRange(_db.Buildings.ToList());
+                    List<LocationBuildings> afterSaveBU = new List<LocationBuildings> { };
 
                     List<HoltecBuildingFloors> FloorsWID = new List<HoltecBuildingFloors> { };
                     List<HoltecBuildingFloors> CompareFL = new List<HoltecBuildingFloors> { };
                     CompareFL.AddRange(_db.Floors.ToList());
+                    List<HoltecBuildingFloors> afterSaveFL = new List<HoltecBuildingFloors> { };
 
                     List<HoltecOfficeSpaces> OfficesWID = new List<HoltecOfficeSpaces> { };
                     List<HoltecOfficeSpaces> CompareOF = new List<HoltecOfficeSpaces> { };
@@ -111,6 +114,7 @@ namespace LocationCORPAPP.Controllers
                                 } while (reader.NextResult());
                             _db.Locations.AddRange(NAMEandADDRESS);
                             _db.SaveChanges();
+                            afterSaveNA.AddRange(_db.Locations.ToList());
 
 
 
@@ -125,7 +129,7 @@ namespace LocationCORPAPP.Controllers
                                     while (reader.Read())
                                     {
                                         var name = reader.GetValue(6)?.ToString().Trim();
-                                        var location = CompareNA.FirstOrDefault(x => x.Name == reader.GetValue(0).ToString().Trim());
+                                        var location = afterSaveNA.FirstOrDefault(x => x.Name == reader.GetValue(0).ToString().Trim());
                                         var newLocationBuildings = new LocationBuildings()
                                         {
                                             Name = name?.ToString(),
@@ -142,6 +146,7 @@ namespace LocationCORPAPP.Controllers
                             }
                             _db.Buildings.AddRange(LocationsWID);
                             _db.SaveChanges();
+                            afterSaveBU.AddRange(_db.Buildings.ToList());
                     }
                     using (var stream = System.IO.File.OpenRead(_path))
                     {
@@ -152,16 +157,24 @@ namespace LocationCORPAPP.Controllers
                                 while (reader.Read())
                                 {
                                     var floorNumber = Convert.ToInt64(reader.GetValue(7));
-                                    var location = _db.Locations.FirstOrDefault(x => x.Name == reader.GetValue(0).ToString().Trim());
-                                    var buildingLocation = _db.Buildings.FirstOrDefault(x => x.LocationId == location.Id);
+                                    var location = afterSaveNA.FirstOrDefault(x => x.Name == reader.GetValue(0).ToString().Trim());
+                                    var buildingLocation = afterSaveBU.Where(x => x.LocationId == location.Id);
+                                    var pickedBuilding = afterSaveBU.FirstOrDefault(x => x.LocationId == location.Id); //The definition for this variable doesn't mean anything I just have it so I can redefine it as building later
+                                    foreach (var building in buildingLocation)
+                                    {
+                                        if (floorNumber == Convert.ToInt64(reader.GetValue(7)) && location.Name.ToString().Trim() == reader.GetValue(0).ToString().Trim() && building.Name.ToString().Trim() == reader.GetValue(6).ToString().Trim())
+                                        {
+                                            pickedBuilding = building;
+                                        }
+                                    }
                                     var newHoltecFloors = new HoltecBuildingFloors()
                                     {
                                         FloorNumber = (int)floorNumber,
-                                        BuildingId = buildingLocation.Id
+                                        BuildingId = pickedBuilding.Id
                                     };
-                                    if (!CompareFL.Any(x => x.FloorNumber == (int)floorNumber && x.BuildingId == buildingLocation.Id))
+                                    if (!CompareFL.Any(x => x.FloorNumber == (int)floorNumber && x.BuildingId == pickedBuilding.Id))
                                     {
-                                        if (!FloorsWID.Any(x => x.FloorNumber == (int)floorNumber && x.BuildingId == buildingLocation.Id))
+                                        if (!FloorsWID.Any(x => x.FloorNumber == (int)floorNumber && x.BuildingId == pickedBuilding.Id))
                                         { FloorsWID.Add(newHoltecFloors); }
                                     }
                                 }
@@ -170,6 +183,7 @@ namespace LocationCORPAPP.Controllers
                         }
                         _db.Floors.AddRange(FloorsWID);
                         _db.SaveChanges();
+                        afterSaveFL.AddRange(_db.Floors.ToList());
                     }
                     using (var stream = System.IO.File.OpenRead(_path))
                     {
@@ -181,24 +195,38 @@ namespace LocationCORPAPP.Controllers
                                 {
                                     var officeNumber = reader.GetValue(8)?.ToString().Trim();
                                     var officeType = reader.GetValue(9)?.ToString().Trim();
-                                    var areaSqft = Convert.ToInt64(reader.GetValue(10)); 
-                                    var location = _db.Locations.FirstOrDefault(x => x.Name == reader.GetValue(0).ToString().Trim());
-                                    var buildingLocation = _db.Buildings.FirstOrDefault(x => x.LocationId == location.Id);
-                                    var floorLocation = _db.Floors.FirstOrDefault(x => x.BuildingId == buildingLocation.Id);
-                                    //var location2 = _db.Buildings.FirstOrDefault(x => x.Name == reader.GetValue(6).ToString().Trim());
-                                    //var location3 = _db.Floors.FirstOrDefault(x => x.BuildingId == location2.Id);
-
+                                    var areaSqft = Convert.ToInt64(reader.GetValue(10));
+                                    var floorNumber = Convert.ToInt64(reader.GetValue(7));
+                                    var location = afterSaveNA.FirstOrDefault(x => x.Name == reader.GetValue(0).ToString().Trim());
+                                    var buildingLocation = afterSaveBU.Where(x => x.LocationId == location.Id);
+                                    var pickedBuilding = afterSaveBU.FirstOrDefault(x => x.LocationId == location.Id); //The definition for this variable doesn't mean anything I just have it so I can redefine it as building later
+                                    var pickedFloor = afterSaveFL.FirstOrDefault(x => x.BuildingId == pickedBuilding.Id); //The definition for this variable doesn't mean anything I just have it so I can redefine it as building later 
+                                    foreach (var building in buildingLocation)
+                                    {
+                                        if (floorNumber == Convert.ToInt64(reader.GetValue(7)) && location.Name.ToString().Trim() == reader.GetValue(0).ToString().Trim() && building.Name.ToString().Trim() == reader.GetValue(6).ToString().Trim())
+                                        {
+                                            pickedBuilding = building;
+                                        }
+                                    }
+                                    var floorLocation = afterSaveFL.Where((x => x.BuildingId == pickedBuilding.Id));
+                                    foreach (var floor in floorLocation)
+                                    {
+                                        if (floorNumber == Convert.ToInt64(reader.GetValue(7)) && location.Name.ToString().Trim() == reader.GetValue(0).ToString().Trim() && pickedBuilding.Name.ToString().Trim() == reader.GetValue(6).ToString().Trim() && officeNumber.ToString().Trim() == reader.GetValue(8)?.ToString().Trim())
+                                        {
+                                            pickedFloor = floor;
+                                        }
+                                    }
                                     var newHoltecOffices = new HoltecOfficeSpaces()
                                     {
                                         OfficeCode = officeNumber,
-                                        FloorId = floorLocation.Id,
+                                        FloorId = pickedFloor.Id,
                                         Name = officeType,
                                         AreaSqft = (int)areaSqft
                                     };
 
-                                        if (!CompareOF.Any(x => x.OfficeCode == officeNumber.ToString() && x.FloorId == floorLocation.Id))
+                                        if (!CompareOF.Any(x => x.OfficeCode == officeNumber.ToString() && x.FloorId == pickedFloor.Id))
                                         {
-                                            if (!OfficesWID.Any(x => x.OfficeCode == officeNumber.ToString() && x.FloorId == floorLocation.Id))
+                                            if (!OfficesWID.Any(x => x.OfficeCode == officeNumber.ToString() && x.FloorId == pickedFloor.Id))
                                             { OfficesWID.Add(newHoltecOffices); }
                                         }
                                 }
