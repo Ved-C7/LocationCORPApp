@@ -93,10 +93,10 @@ namespace LocationCORPApp.Controllers
             ViewData["PickedBuildingName"] = Request.Form["BuildingName"].ToString();
             ViewData["PickedFloorLevel"] = Request.Form["FloorLevel"].ToString();
             ViewData["PickedOfficeCubicleNumber"] = Request.Form["OfficeCubicleNumber"].ToString();
-            Console.WriteLine(ViewData["PickedLocationName"]);
-            Console.WriteLine(ViewData["PickedBuildingName"]);
-            Console.WriteLine(ViewData["PickedFloorLevel"]);
-            Console.WriteLine(ViewData["PickedOfficeCubicleNumber"]);
+            //Console.WriteLine(ViewData["PickedLocationName"]);
+            //Console.WriteLine(ViewData["PickedBuildingName"]);
+            //Console.WriteLine(ViewData["PickedFloorLevel"]);
+            //Console.WriteLine(ViewData["PickedOfficeCubicleNumber"]);
 
             return View("MyProfile");
         }
