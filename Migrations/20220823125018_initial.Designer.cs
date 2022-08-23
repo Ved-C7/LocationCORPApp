@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocationCORPApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220720203444_AddEmploToDatabase")]
-    partial class AddEmploToDatabase
+    [Migration("20220823125018_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,54 +26,30 @@ namespace LocationCORPApp.Migrations
 
             modelBuilder.Entity("LocationCORPApp.Models.Employee", b =>
                 {
-                    b.Property<string>("EmployeeID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("BUID")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool>("Cloak")
-                        .HasColumnType("bit");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CompEmailID")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DOB")
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RecordCreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmpID")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PersonalEmailID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PrimaryPhone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Remarks")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("EmployeeID");
-
-                    b.ToTable("Employee");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("LocationCORPApp.Models.EmployeeLocations", b =>
@@ -167,7 +143,7 @@ namespace LocationCORPApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AreaSqft")
+                    b.Property<int?>("AreaSqft")
                         .HasColumnType("int");
 
                     b.Property<int>("FloorId")

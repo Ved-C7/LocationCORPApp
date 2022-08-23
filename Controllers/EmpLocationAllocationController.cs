@@ -15,7 +15,7 @@ namespace LocationCORPApp.Controllers
             _db = db;
         }
         
-        public IActionResult MyProfile()
+        public IActionResult Index()
         {
             List<SelectListItem> LocationNames = _db.Locations
            .Select(u => new SelectListItem() { Text = u.Name, Value = u.Id.ToString() })
@@ -23,30 +23,30 @@ namespace LocationCORPApp.Controllers
 
             ViewData["LocationNames"] = LocationNames;
 
-            var employeeFromDB = _db.Employee.FirstOrDefault(x => x.EmpID == 1);
-            var location = _db.EmployeeLocation.FirstOrDefault(x => x.Id == employeeFromDB.LocationId);
-            var employeeVM = new EmployeeProfileVM() {
-                EmpID = employeeFromDB.EmpID,
-                BUID = employeeFromDB.BUID,
+            //var employeeFromDB = _db.Employee.FirstOrDefault(x => x.EmpID == 1);
+            //var location = _db.EmployeeLocation.FirstOrDefault(x => x.Id == employeeFromDB.LocationId);
+            //var employeeVM = new EmployeeProfileVM() {
+            //    EmpID = employeeFromDB.EmpID,
+              //  BUID = employeeFromDB.BUID,
                 //FirstName = employeeFromDB.FirstName,
                 //LastName = employeeFromDB.LastName,
                 //CompEmailID = employeeFromDB.CompEmailID,
                 //PersonalEmailID = employeeFromDB.PersonalEmailID,
                 //DOB = employeeFromDB.DOB,
-                IsActive = employeeFromDB.IsActive,
-                Remarks = employeeFromDB.Remarks,
-                Cloak = employeeFromDB.Cloak,
-                LocationId = employeeFromDB.LocationId,
-                EmployeeLocation = new EmployeeLocationVM {
-                     EmployeeID = (int)location.EmployeeId,
+           //     IsActive = employeeFromDB.IsActive,
+             //   Remarks = employeeFromDB.Remarks,
+          //      Cloak = employeeFromDB.Cloak,
+          //      LocationId = employeeFromDB.LocationId,
+           //     EmployeeLocation = new EmployeeLocationVM {
+            //         EmployeeID = (int)location.EmployeeId,
                      //LocationName = location.LocationId,
                      //BuildingName = location.BuildingId,
                      //FloorLevel = location.FloorId,
                      //OfficeCubicleNumber = location.OfficeId,
-                }
-            };
+            //    }
+          //  };
 
-            return View(employeeVM);
+            return View();
         }
 
         [HttpPost]
@@ -87,18 +87,18 @@ namespace LocationCORPApp.Controllers
            .Select(u => new SelectListItem() { Text = u.Name, Value = u.Id.ToString() })
            .ToList();
 
-            //ViewData["LocationNames"] = LocationNames;
+            ViewData["LocationNames"] = LocationNames;
 
             ViewData["PickedLocationName"] = Request.Form["LocationName"].ToString();
             ViewData["PickedBuildingName"] = Request.Form["BuildingName"].ToString();
             ViewData["PickedFloorLevel"] = Request.Form["FloorLevel"].ToString();
             ViewData["PickedOfficeCubicleNumber"] = Request.Form["OfficeCubicleNumber"].ToString();
-            //Console.WriteLine(ViewData["PickedLocationName"]);
-            //Console.WriteLine(ViewData["PickedBuildingName"]);
-            //Console.WriteLine(ViewData["PickedFloorLevel"]);
-            //Console.WriteLine(ViewData["PickedOfficeCubicleNumber"]);
+            Console.WriteLine(ViewData["PickedLocationName"]);
+            Console.WriteLine(ViewData["PickedBuildingName"]);
+            Console.WriteLine(ViewData["PickedFloorLevel"]);
+            Console.WriteLine(ViewData["PickedOfficeCubicleNumber"]);
 
-            return View("MyProfile");
+            return View("Index");
         }
 
     }

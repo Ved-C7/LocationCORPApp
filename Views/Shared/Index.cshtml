@@ -4,12 +4,19 @@
 	var locationNames = ViewData["LocationNames"] as List<SelectListItem>;
 	//var locationNames = Model.LocationNames; 
 	//var buildingNames = ViewData["BuildingNames"] as List<SelectListItem>;
+	var pickedLoc = ViewData["PickedLocationName"];
+	var pickedBuild = ViewData["PickedBuildingName"];
+	var pickedLevel = ViewData["PickedFloorLevel"];
+	var pickedNum = ViewData["PickedOfficeCubicleNumber"];
+	ViewData["empLoc"] = 0;
+	ViewData["empBuild"] = 0;
+	ViewData["empLevel"] = 0;
+	ViewData["empNum"] = "0";
 }
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -124,10 +131,11 @@
   });
 </script>
 
+@using (Html.BeginForm("Submit", "EmpLocationAllocation", FormMethod.Post)) {
 	<table>
 		<tr>
 			<td>Location</td>
-			<td>@Html.DropDownListFor(m => m.LocationName, locationNames, "Select Location")
+			<td>@Html.DropDownList("LocationName", locationNames,"Select a Location")
 				<br />
 			@Html.ValidationMessageFor(model => model.LocationName, "", new {@class = "text-danger"})
 		</tr>
@@ -147,28 +155,48 @@
 			<td colspan="2">
 			</td>
 		</tr>
+		</table>
+
+		<table>
 		<tr>
-			<td>Picked Location</td>
+			<td>Picked Location - </td>
 			<td>
-				@Model.LocationName
+				@{ViewData["empLoc"] = 0;
+					@if (Convert.ToInt64(pickedLoc) != 0) {
+						<span> @pickedLoc.ToString() </span>
+					ViewData["empLoc"] = Convert.ToInt64(pickedLoc);
+				}}
+
 			</td>
 		</tr>
 		<tr>
-			<td>Picked Building</td>
+			<td>Picked Building - </td>
 			<td>
-				@Model.BuildingName
+				@{ViewData["empBuild"] = 0;
+						@if (Convert.ToInt64(pickedBuild) != 0) {
+							<span> @pickedBuild.ToString() </span>
+					ViewData["empBuild"] = Convert.ToInt64(pickedBuild);
+				}}
 			</td>
 		</tr>
 		<tr>
-			<td>Picked Floor Level</td>
+			<td>Picked Floor Level - </td>
 			<td>
-				@Model.FloorLevel
+				@{ViewData["empLevel"] = 0;
+							@if (Convert.ToInt64(pickedLevel) != 0) {
+								<span> @pickedLevel.ToString() </span>
+					ViewData["empLevel"] = Convert.ToInt64(pickedLevel);
+				}}
 			</td>
 		</tr>
 		<tr>
-			<td>Picked Cubical/Office</td>
+			<td>Picked Cubical/Office - </td>
 			<td>
-				@Model.OfficeCubicleNumber
+				@{ViewData["empNum"] = 0;
+								@if (pickedNum != "0") {
+									<span> @pickedNum </span>
+					ViewData["empNum"] = pickedNum;
+				}}
 			</td>
 		</tr>
 	</table>
@@ -176,6 +204,5 @@
 	
 	<br />
 	<button type="submit" class="btn btn-primary">Submit</button>
-	<form method= "post">
-	<div asp-validation ="All" class="text-danger"></div>
-	</form>
+
+	}

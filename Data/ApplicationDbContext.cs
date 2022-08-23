@@ -12,7 +12,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<LocationBuildings> Buildings { get; set; }
     public DbSet<HoltecBuildingFloors> Floors { get; set; }
     public DbSet<HoltecOfficeSpaces> Offices { get; set; }
-    public DbSet<Employee> Employee { get; set; }
+    public DbSet<Employee> Employees { get; set; }
     public DbSet<EmployeeLocations> EmployeeLocation { get; set; }
 
 

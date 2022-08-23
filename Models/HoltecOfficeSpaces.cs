@@ -6,7 +6,7 @@
         public int FloorId { get; set; }
         public string OfficeCode { get; set; }
         public string Name { get; set; }
-        public int AreaSqft { get; set; }
+        public int? AreaSqft { get; set; }
 
     }
 }
