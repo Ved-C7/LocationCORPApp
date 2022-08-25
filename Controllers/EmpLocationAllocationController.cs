@@ -14,12 +14,23 @@ namespace LocationCORPApp.Controllers
         {
             _db = db;
         }
-        
+
         public IActionResult Index()
         {
             List<SelectListItem> LocationNames = _db.Locations
            .Select(u => new SelectListItem() { Text = u.Name, Value = u.Id.ToString() })
            .ToList();
+            List<HoltecLocations> locations = new List<HoltecLocations> { };
+            locations.AddRange(_db.Locations.ToList());
+            List<EmployeeLocations> employeeLocations = new List<EmployeeLocations> { };
+            employeeLocations.AddRange(_db.EmployeeLocation.ToList());
+            var temp = employeeLocations.First(x => x.LocationId != 0);
+            ViewData["CurrentLoc"] = locations.FirstOrDefault(x => x.Id == temp.LocationId).Id;
+
+            List<LocationBuildings> buildings = new List<LocationBuildings> { };
+            buildings.AddRange(_db.Buildings.ToList());
+            var temp2 = employeeLocations.First(x => x.BuildingId != 0);
+            ViewData["CurrentBu"] = buildings.FirstOrDefault(x => x.Id == temp.BuildingId).Id;
 
             ViewData["LocationNames"] = LocationNames;
 

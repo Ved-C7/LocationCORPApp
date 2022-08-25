@@ -1,4 +1,4 @@
-﻿@model LocationCORPApp.ViewModel.EmployeeProfileVM
+﻿@* @model LocationCORPApp.ViewModel.EmployeeProfileVM
 @{
 	ViewData["Title"] = "Employee Location Allocation";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -54,7 +54,7 @@
 											<span class="icon icon-calendar"></span>
 										</span>
 										@* <input style="background-color:white;width: 240px;" type="text" id="@Html.IdFor(model=>model.DOB)" name="@Html.NameFor(model=>model.DOB)" value="@(Model.DOB.Year <1900?string.Empty: Model.DOB.ToShortDateString())" contenteditable="false" readonly="readonly" class="form-control text-box single-line" data-provide="datepicker" data-date-end-date="0d"> *@
-										@Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+										@*@Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
 									</div>
 								</div>
 							</div>
@@ -113,10 +113,8 @@
 				<br />
 				<br />
 				<h3> Pick Location </h3>
-				@Html.Partial("Index", Model.EmployeeLocation, new ViewDataDictionary(this.ViewData){  } )
+				@*@Html.Partial("Index", Model.EmployeeLocation, new ViewDataDictionary(this.ViewData){  } )*@
 				
 				
 
 				}
-
-
